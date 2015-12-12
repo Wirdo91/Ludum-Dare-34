@@ -18,6 +18,22 @@ public class GlobalVariables : MonoBehaviour {
     public float PickUpRate { get { return _pickUpRate; } }
 
     [SerializeField]
+    float _playerMaxMoveSpeed;
+    public float PlayerMaxMoveSpeed { get { return _playerMaxMoveSpeed; } }
+
+    [SerializeField]
+    float _playerAcceleration;
+    public float PlayerAcceleration { get { return _playerAcceleration; } }
+
+    [SerializeField]
+    float _playerTurningSpeed;
+    public float PlayerTurningSpeed { get { return _playerTurningSpeed; } }
+
+    [SerializeField]
+    float _snowManAcceleration;
+    public float SnowManAcceleration { get { return _snowManAcceleration; } }
+
+    [SerializeField]
     KeyCode _turnLeftButton;
     public KeyCode TurnLeftButton { get { return _turnLeftButton; } }
 

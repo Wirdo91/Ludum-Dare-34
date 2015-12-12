@@ -16,7 +16,7 @@ public class SnowBallMovement : MonoBehaviour {
 	void Start ()
     {
         _player = GetComponentInParent<PlayerMovement>();
-        float _currentThickness = GlobalVariables.instance.SnowBallInitialSize;
+        _currentThickness = GlobalVariables.instance.SnowBallInitialSize;
     }
 	
 	// Update is called once per frame
