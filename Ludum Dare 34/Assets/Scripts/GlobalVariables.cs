@@ -10,6 +10,14 @@ public class GlobalVariables : MonoBehaviour {
     public float SnowBallInitialSize { get { return _snowBallInitialSize; } }
 
     [SerializeField]
+    float _snowRate;
+    public float SnowRate { get { return _snowRate; } }
+
+    [SerializeField]
+    float _pickUpRate;
+    public float PickUpRate { get { return _pickUpRate; } }
+
+    [SerializeField]
     KeyCode _turnLeftButton;
     public KeyCode TurnLeftButton { get { return _turnLeftButton; } }
 

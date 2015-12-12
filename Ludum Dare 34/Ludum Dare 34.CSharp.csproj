@@ -75,10 +75,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\GlobalVariables.cs" />
+    <Compile Include="Assets\Scripts\GrassExpire.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\SnowBallMovement.cs" />
     <Compile Include="Assets\Scripts\SnowBallRotation.cs" />
-    <Compile Include="Assets\Scripts\StringIDs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

@@ -18,7 +18,11 @@ public class PlayerMovement : MonoBehaviour {
     float _playerCurrentMoveSpeed = 0f;
     public float PlayerCurrentMoveSpeed { get { return _playerCurrentMoveSpeed; } }
 
-    GameObject _currentSnowBall;
+    SnowBallMovement _currentSnowBall;
+    Transform _playerObject;
+
+    [SerializeField]
+    bool _move = false;
 
 	// Use this for initialization
 	void Start ()
@@ -30,8 +34,9 @@ public class PlayerMovement : MonoBehaviour {
             CreateNewSnowBall();
         }
 
-        transform.GetChild(0).localPosition = 
-            _playerDirectionVector * -GlobalVariables.instance.SnowBallInitialSize;
+        _playerObject = transform.FindChild("Player");
+
+        //transform.GetChild(0).localPosition = _playerDirectionVector * -GlobalVariables.instance.SnowBallInitialSize;
     }
 	
 	// Update is called once per frame
@@ -50,18 +55,18 @@ public class PlayerMovement : MonoBehaviour {
         {
             _playerDirectionVector = Quaternion.Euler(0, _turningSpeed * Time.deltaTime, 0) * _playerDirectionVector;
         }
-        
-        transform.rotation = Quaternion.LookRotation(_playerDirectionVector);
+        _playerDirectionVector.Normalize();
 
-        transform.position += (transform.forward * _playerCurrentMoveSpeed * Time.deltaTime);
-
-        //_currentSnowBall.transform.position = this.transform.position;
-        //_currentSnowBall.transform.Translate(_playerDirectionVector * _playerCurrentMoveSpeed * Time.deltaTime);
+        if (_move)
+        {
+            transform.position += (_playerDirectionVector * _playerCurrentMoveSpeed * Time.deltaTime);
+        }
+        _playerObject.localPosition = _playerDirectionVector * -((_currentSnowBall.CurrentThickness / 2) + .5f);
     }
 
     void CreateNewSnowBall()
     {
-        _currentSnowBall = Instantiate(_snowBallPrefab);
+        _currentSnowBall = Instantiate(_snowBallPrefab).GetComponent<SnowBallMovement>();
         _currentSnowBall.transform.position = transform.position;
         _currentSnowBall.transform.parent = this.transform;
     }
