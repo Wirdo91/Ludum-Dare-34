@@ -1,0 +1,31 @@
+Growing &| 2 button controls
+
+Snow growing
+	Rolling a snowball around
+	it grows
+	2 buttons controls (turn left, turn rigth)
+	
+	Speed affected by size of current ball
+	
+	When compilet into ball, you can stop, which switches you around
+	then you can make a new
+	
+	three balls make a snow man
+	the balls needs to be increasing sizes from bottom
+	if not, the top breaks and the snow is lost
+	
+	After timer runs out, the finished snowmen goes into automated battle
+	
+	Goal is: whether its better to have one big or several small
+	Alternative goal is: the highest snowman wins
+		how many layers are irrelevant
+		it sways as it gets higher
+		it sways dependent on the stability (Big balls bottom, smaller on top)
+	
+	
+	Graphics
+		snow all over
+		ball creates trail of 'snow removed (grass & snow)
+		as time goes on, trail becomes invisble
+		
+		if ball goes over trail, the amount of snow picked up is dependent in visibility
