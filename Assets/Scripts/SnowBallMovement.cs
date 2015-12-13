@@ -5,8 +5,13 @@ using System.Collections;
 public class SnowBallMovement : MonoBehaviour {
 
     PlayerMovement _player;
+    TerrainHandler _terrainHandler;
+    [SerializeField]
+    AnimationCurve _pickupmodifier;
+    [SerializeField]
+    float _maxsize = 10;
 
-    float _currentThickness;
+    float _currentThickness = 0;
     public float CurrentThickness { get { return _currentThickness; } }
 
     [SerializeField]
@@ -17,12 +22,13 @@ public class SnowBallMovement : MonoBehaviour {
     {
         _player = GetComponentInParent<PlayerMovement>();
         _currentThickness = GlobalVariables.instance.SnowBallInitialSize;
+        _terrainHandler = GameObject.Find("Terrain").GetComponent<TerrainHandler>();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        _currentThickness += GlobalVariables.instance.PickUpRate * Time.deltaTime;
+        _currentThickness += (_terrainHandler.GetSnow() * Time.deltaTime * GlobalVariables.instance.PickUpRate) * _pickupmodifier.Evaluate(CurrentThickness / _maxsize);
 
         this.transform.GetChild(0).localScale = Vector3.one * _currentThickness;
 
