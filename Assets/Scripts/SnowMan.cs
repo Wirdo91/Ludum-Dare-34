@@ -3,22 +3,17 @@ using System.Collections;
 
 public struct NonActiveSnowMan
 {
-    public readonly float _bottom;
-    public readonly float _middle;
-    public readonly float _top;
+    public readonly float Bottom;
+    public readonly float Middle;
+    public readonly float Top;
 
-    public readonly float _movementSpeed;
-
-    public readonly Teams _currentTeam;
+    public readonly Teams CurrentTeam;
     public NonActiveSnowMan(float bottom, float middle, float top, Teams team)
     {
-        _bottom = bottom;
-        _middle = middle;
-        _top = top;
-        _currentTeam = team;
-
-        //TODO Movement speed dependent on size
-        _movementSpeed = 1f;
+        Bottom = bottom;
+        Middle = middle;
+        Top = top;
+        CurrentTeam = team;
     }
 }
 
@@ -28,15 +23,21 @@ public class SnowMan : MonoBehaviour {
     float _middle;
     float _top;
 
-    private float size { get { return (_bottom + _middle + _top) / 3; } }
-
-    bool _fighting;
+    public float Size { get { return (_bottom + _middle + _top) / 3; } }
 
     float _currentMovementSpeed = 0;
+    public float MovementSpeed
+    {
+        get { return _currentMovementSpeed; }
+    }
+
+    //TODO Movement speed dependent on size
     float _maxMovementSpeed;
     Vector3 _movementDirection = Vector3.zero;
 
     CapsuleCollider _collider;
+
+    float _currentHealth = 0f;
 
     Teams _currentTeam;
     public Teams CurrentTeam
@@ -46,7 +47,7 @@ public class SnowMan : MonoBehaviour {
 
     BattleSystem _battleController;
 
-    SnowMan _currentOpponent;
+    Transform _currentOpponent;
 
     public void SetValues(float bottom, float middle, float top, Teams team)
     {
@@ -54,6 +55,10 @@ public class SnowMan : MonoBehaviour {
         _middle = middle;
         _top = top;
         _currentTeam = team;
+
+        //HACK Possibly redo the health function
+        //_currentHealth = (((_bottom) + (_middle * _bottom) + (_top * _bottom)) * 10) - (_bottom - _middle - _top);
+        _currentHealth = (_bottom * 3 + _middle * 2 + _top) *10;
 
         //TODO Movement speed dependent on size
         _maxMovementSpeed = 5f;
@@ -65,7 +70,7 @@ public class SnowMan : MonoBehaviour {
 
     public void SetValues(NonActiveSnowMan existingSnowMan)
     {
-        SetValues(existingSnowMan._bottom, existingSnowMan._middle, existingSnowMan._top, existingSnowMan._currentTeam);
+        SetValues(existingSnowMan.Bottom, existingSnowMan.Middle, existingSnowMan.Top, existingSnowMan.CurrentTeam);
     }
 
     public void Create()
@@ -93,11 +98,30 @@ public class SnowMan : MonoBehaviour {
         _collider.center = new Vector3(0, _collider.height / 2, 0);
     }
 
-    void FixedUpdate()
+    void Update()
     {
+        if (_currentHealth < 0f)
+        {
+            Transform internalBall;
+            //Death
+            for (int i = 0; i < this.transform.childCount; i++)
+            {
+                internalBall = this.transform.GetChild(i);
+                internalBall.parent = null;
+                internalBall.gameObject.AddComponent<Rigidbody>();
+                internalBall.gameObject.AddComponent<BallExpire>();
+            }
+            internalBall = null;
+            Destroy(this.gameObject);
+        }
         if (_currentOpponent == null)
         {
-            _currentOpponent = _battleController.GetNearestSnowManOfOppesiteTeam(this);
+            _currentOpponent = _battleController.GetNearestTarget(this);
+            //If no enemy exists
+            if (_currentOpponent == null)
+            {
+                return;
+            }
         }
         
         _currentMovementSpeed = Mathf.Lerp(_currentMovementSpeed, _maxMovementSpeed, GlobalVariables.instance.SnowManAcceleration * Time.deltaTime);
@@ -109,12 +133,26 @@ public class SnowMan : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        Debug.Log(col.gameObject.name);
-
         SnowMan op = col.gameObject.GetComponent<SnowMan>();
         if (op != null)
         {
-            _currentMovementSpeed -= (op.size * 2 + Mathf.Abs(op._currentMovementSpeed));
+            _currentMovementSpeed -= (op.Size * 2 + Mathf.Abs(op._currentMovementSpeed));
+            op.Damage(this);
+        }
+
+        HomeBase hb = col.gameObject.GetComponent<HomeBase>();
+        if (hb != null)
+        {
+            hb.Damage(this);
+            _currentMovementSpeed *= -2;
+        }
+    }
+
+    void Damage(SnowMan enemy)
+    {
+        if (enemy.CurrentTeam != this.CurrentTeam)
+        {
+            _currentHealth -= enemy.Size * Mathf.Abs(enemy.MovementSpeed);
         }
     }
 }

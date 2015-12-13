@@ -17,6 +17,9 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField]
     bool _move = false;
 
+    [SerializeField]
+    Teams _playerTeam;
+
     // Use this for initialization
     void Start()
     {
@@ -29,9 +32,15 @@ public class PlayerMovement : MonoBehaviour {
 
         _playerObject = transform.FindChild("Player");
 
-        FindObjectOfType<BattleSystem>().InitializeBattle(
-            new System.Collections.Generic.List<NonActiveSnowMan> { new NonActiveSnowMan(3, 2, 1, Teams.TEAM1) }, 
-            new System.Collections.Generic.List<NonActiveSnowMan> { new NonActiveSnowMan(3, 2, 1, Teams.TEAM2) });
+        //HACK temp code for battle testing
+        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.zero);
+        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 4);
+        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 8);
+        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 12);
+        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 4);
+        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 8);
+        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 12);
+        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(1, 2, 3, Teams.TEAM2), Vector3.left * 10);
 
         //transform.GetChild(0).localPosition = _playerDirectionVector * -GlobalVariables.instance.SnowBallInitialSize;
     }
@@ -44,11 +53,11 @@ public class PlayerMovement : MonoBehaviour {
             _playerCurrentMoveSpeed = Mathf.Lerp(_playerCurrentMoveSpeed, GlobalVariables.instance.PlayerMaxMoveSpeed, GlobalVariables.instance.PlayerAcceleration * Time.deltaTime);
         }
 
-        if (Input.GetKey(GlobalVariables.instance.TurnLeftButton))
+        if (Input.GetKey(GlobalVariables.instance.Player1TurnLeftButton))
         {
             _playerDirectionVector = Quaternion.Euler(0, -GlobalVariables.instance.PlayerTurningSpeed * Time.deltaTime, 0) * _playerDirectionVector;
         }
-        else if (Input.GetKey(GlobalVariables.instance.TurnRightButton))
+        else if (Input.GetKey(GlobalVariables.instance.Player2TurnRightButton))
         {
             _playerDirectionVector = Quaternion.Euler(0, GlobalVariables.instance.PlayerTurningSpeed * Time.deltaTime, 0) * _playerDirectionVector;
         }
