@@ -11,6 +11,11 @@ public class SnowBallMovement : MonoBehaviour {
     [SerializeField]
     float _maxsize = 5;
 
+    public Teams CurrentTeam
+    {
+        get { return _player.PlayerTeam; }
+    }
+
     float _currentThickness;
     public float CurrentThickness { get { return _currentThickness; } }
 
@@ -48,7 +53,7 @@ public class SnowBallMovement : MonoBehaviour {
     void OnTriggerEnter(Collider col)
     {
         SnowManBuilder builder = col.GetComponent<SnowManBuilder>();
-        if (builder != null)
+        if (builder != null && builder.Team == this.CurrentTeam)
         {
             builder.TransferBall(this);
             _player.RemoveBallReference();

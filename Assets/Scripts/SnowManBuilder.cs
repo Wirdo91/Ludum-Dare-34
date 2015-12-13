@@ -10,6 +10,8 @@ public class SnowManBuilder : MonoBehaviour {
     BattleSystem _battleSystem;
     HomeBase _localHomeBase;
 
+    public Teams Team { get { return _localHomeBase.BaseTeam; } }
+
     void Start()
     {
         _balls = new List<SnowBallMovement>();
@@ -19,6 +21,11 @@ public class SnowManBuilder : MonoBehaviour {
 
     public void TransferBall(SnowBallMovement ball)
     {
+        if (ball.CurrentTeam != this._localHomeBase.BaseTeam)
+        {
+            return;
+        }
+
         ball.transform.parent = this.transform;
 
         Vector3 ballPosition = this.transform.position;

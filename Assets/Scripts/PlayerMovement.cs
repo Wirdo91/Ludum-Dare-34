@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour {
 
     [SerializeField]
     Teams _playerTeam;
+    public Teams PlayerTeam {  get { return _playerTeam; } }
 
     // Use this for initialization
     void Start()
