@@ -18,6 +18,10 @@ public class GlobalVariables : MonoBehaviour {
     public float PickUpRate { get { return _pickUpRate; } }
 
     [SerializeField]
+    float _homeBaseStartHealth;
+    public float HomeBaseStartHealth { get { return _homeBaseStartHealth; } }
+
+    [SerializeField]
     float _playerMaxMoveSpeed;
     public float PlayerMaxMoveSpeed { get { return _playerMaxMoveSpeed; } }
 
@@ -34,12 +38,25 @@ public class GlobalVariables : MonoBehaviour {
     public float SnowManAcceleration { get { return _snowManAcceleration; } }
 
     [SerializeField]
-    KeyCode _turnLeftButton;
-    public KeyCode TurnLeftButton { get { return _turnLeftButton; } }
+    Material _player1Material;
+    public Material Player1Material { get { return _player1Material; } }
 
     [SerializeField]
-    KeyCode _turnRightButton;
-    public KeyCode TurnRightButton { get { return _turnRightButton; } }
+    Material _player2Material;
+    public Material Player2Material { get { return _player2Material; } }
+
+    public Material GetTeamMaterial(Teams team)
+    {
+        switch(team)
+        {
+            case Teams.TEAM1:
+                return Player1Material;
+            case Teams.TEAM2:
+                return Player2Material;
+            default:
+                return null;
+        }
+    }
 
     void Awake()
     {
