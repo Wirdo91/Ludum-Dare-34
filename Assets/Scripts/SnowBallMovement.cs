@@ -5,12 +5,14 @@ using System.Collections;
 public class SnowBallMovement : MonoBehaviour {
 
     PlayerMovement _player;
+    TerrainHandler _terrainHandler;
+    [SerializeField]
+    AnimationCurve _pickupmodifier;
+    [SerializeField]
+    float _maxsize = 5;
 
     float _currentThickness;
     public float CurrentThickness { get { return _currentThickness; } }
-
-    [SerializeField]
-    GameObject _snowRemovedArea;
 
     bool _inPlay = false;
 
@@ -22,12 +24,14 @@ public class SnowBallMovement : MonoBehaviour {
         _inPlay = true;
         _player = GetComponentInParent<PlayerMovement>();
         _currentThickness = GlobalVariables.instance.SnowBallInitialSize;
+        _terrainHandler = GameObject.Find("World").GetComponent<TerrainHandler>();
         col = this.GetComponent<SphereCollider>();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        _currentThickness += (_terrainHandler.GetSnow(this.transform) * Time.deltaTime * GlobalVariables.instance.PickUpRate) * _pickupmodifier.Evaluate(CurrentThickness / _maxsize);
         if (_inPlay)
         {
             _currentThickness += GlobalVariables.instance.PickUpRate * Time.deltaTime;
@@ -38,11 +42,6 @@ public class SnowBallMovement : MonoBehaviour {
 
             this.transform.position =
                 new Vector3(transform.position.x, _currentThickness / 2, transform.position.z);
-
-            /*GameObject currentGrass = Instantiate(_snowRemovedArea);
-            currentGrass.transform.localScale = Vector3.one * _currentThickness;
-            currentGrass.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
-            currentGrass.transform.rotation = Quaternion.LookRotation(_player.PlayerDirectionVector);*/
         }
     }
 

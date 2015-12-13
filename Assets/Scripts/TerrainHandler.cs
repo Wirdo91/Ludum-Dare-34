@@ -3,8 +3,6 @@ using System.Collections;
 
 public class TerrainHandler : MonoBehaviour
 {
-    [SerializeField]
-    Transform player;
     Terrain terrain;
     int resolution = 512;
 
@@ -34,8 +32,12 @@ public class TerrainHandler : MonoBehaviour
         terrain.terrainData.SetAlphamaps(0, 0, alphas);
     }
 
-    public float GetSnow()
+    public float GetSnow(Transform player)
     {
+        if (player.position.x < 0 || player.position.x > terrain.terrainData.size.x || player.position.z < 0 || player.position.z > terrain.terrainData.size.z)
+        {
+            return 0.0f;
+        }
         float snowpickup = 0;
 
 
