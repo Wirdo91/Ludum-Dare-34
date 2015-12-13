@@ -67,9 +67,11 @@ public class SnowMan : MonoBehaviour {
         _currentHealth = (_bottom * 3 + _middle * 2 + _top) *10;
 
         //TODO Movement speed dependent on size
-        _maxMovementSpeed = 10f;
+        _maxMovementSpeed = GlobalVariables.instance.SnowManBaseSpeed + (GlobalVariables.instance.SnowManBaseSpeed / Size);
 
         _battleController = GameObject.FindObjectOfType<BattleSystem>();
+
+        _battleController.OnWinCondition += OnWinCondition;
 
         _collider = this.GetComponent<CapsuleCollider>();
     }
@@ -114,21 +116,34 @@ public class SnowMan : MonoBehaviour {
         _collider.center = new Vector3(0, _collider.height / 2, 0);
     }
 
+    void OnWinCondition(Teams winningTeam)
+    {
+        if (CurrentTeam != winningTeam)
+        {
+            Death();
+        }
+    }
+
+    void Death()
+    {
+        Transform internalBall;
+        //Death
+        for (int i = 0; i < this.transform.childCount; i++)
+        {
+            internalBall = this.transform.GetChild(i);
+            internalBall.parent = null;
+            internalBall.gameObject.AddComponent<Rigidbody>();
+            internalBall.gameObject.AddComponent<BallExpire>();
+        }
+        internalBall = null;
+        Destroy(this.gameObject);
+    }
+
     void FixedUpdate()
     {
         if (_currentHealth < 0f)
         {
-            Transform internalBall;
-            //Death
-            for (int i = 0; i < this.transform.childCount; i++)
-            {
-                internalBall = this.transform.GetChild(i);
-                internalBall.parent = null;
-                internalBall.gameObject.AddComponent<Rigidbody>();
-                internalBall.gameObject.AddComponent<BallExpire>();
-            }
-            internalBall = null;
-            Destroy(this.gameObject);
+            Death();
         }
         if (_currentOpponent == null)
         {
@@ -160,16 +175,13 @@ public class SnowMan : MonoBehaviour {
         this.transform.Translate(_movementDirection * _currentMovementSpeed * Time.deltaTime);
 
         this.transform.Translate(_pushedDirection * _pushedSpeed * Time.deltaTime);
-        Debug.DrawRay(this.transform.position + Vector3.up * 5, _movementDirection * 5, Color.green);
+        Debug.DrawRay(this.transform.position + Vector3.up, _movementDirection * 5, Color.green);
     }
-    [SerializeField]
-    GameObject newestCollision;
 
     void OnCollisionEnter(Collision col)
     {
-        _currentMovementSpeed /= 2;
-
-        newestCollision = col.gameObject;
+        _currentMovementSpeed -= _currentMovementSpeed / 3;
+        
         SnowMan op = col.gameObject.GetComponent<SnowMan>();
         if (op != null)
         {
@@ -184,7 +196,7 @@ public class SnowMan : MonoBehaviour {
         if (hb != null)
         {
             _pushedDirection = -(col.transform.position - this.transform.position).normalized;
-            _pushedSpeed = _currentMovementSpeed * 2;
+            _pushedSpeed = GlobalVariables.instance.SnowManBaseSpeed * 2;
             hb.Damage(this);
             //_currentMovementSpeed *= -2;
             return;

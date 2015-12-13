@@ -38,6 +38,14 @@ public class GlobalVariables : MonoBehaviour {
     public float SnowManAcceleration { get { return _snowManAcceleration; } }
 
     [SerializeField]
+    float _snowManBaseSpeed;
+    public float SnowManBaseSpeed { get { return _snowManBaseSpeed; } }
+
+    [SerializeField]
+    float _snowBallMinSize;
+    public float SnowBallMinSize { get { return _snowBallMinSize; } }
+
+    [SerializeField]
     Material _player1Material;
     public Material Player1Material { get { return _player1Material; } }
 

@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour {
     float _playerCurrentMoveSpeed = 0f;
     public float PlayerCurrentMoveSpeed { get { return _playerCurrentMoveSpeed; } }
 
-    CapsuleCollider collider;
+    CapsuleCollider EntireCollider;
 
     [SerializeField]
     KeyCode _turnLeftButton;
@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour {
     {
         _playerDirectionVector = _initialDirection;
 
-        collider = this.GetComponent<CapsuleCollider>();
+        EntireCollider = this.GetComponent<CapsuleCollider>();
 
         if (_currentSnowBall == null)
         {
@@ -44,6 +44,8 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         _playerObject = transform.FindChild("Player");
+
+        FindObjectOfType<BattleSystem>().OnWinCondition += OnWinCondition;
 
         //transform.GetChild(0).localPosition = _playerDirectionVector * -GlobalVariables.instance.SnowBallInitialSize;
     }
@@ -80,9 +82,14 @@ public class PlayerMovement : MonoBehaviour {
         _playerObject.localPosition = Vector3.forward * -((_currentSnowBall.CurrentThickness / 2) + .5f);
         //_playerObject.LookAt(this.transform.position);
 
-        collider.height = 1 + _currentSnowBall.CurrentThickness;
-        collider.center = new Vector3(0, _currentSnowBall.transform.localPosition.y, -.5f);
-        collider.radius = _currentSnowBall.CurrentThickness / 2;
+        EntireCollider.height = 1 + _currentSnowBall.CurrentThickness;
+        EntireCollider.center = new Vector3(0, _currentSnowBall.transform.localPosition.y, -.5f);
+        EntireCollider.radius = _currentSnowBall.CurrentThickness / 2;
+    }
+
+    void OnWinCondition(Teams winningTeam)
+    {
+        _move = false;
     }
 
     public void RemoveBallReference()

@@ -16,6 +16,12 @@ public class BattleSystem : MonoBehaviour {
     [SerializeField]
     GameObject _snowManPrefab;
 
+    bool _gameOver = false;
+    public bool GameOver { get { return _gameOver; } }
+
+    public delegate void WinCondition(Teams winningTeam);
+    public event WinCondition OnWinCondition;
+
     void Start()
     {
         _team1 = new List<SnowMan>();
@@ -51,14 +57,6 @@ public class BattleSystem : MonoBehaviour {
                 }
             }
         }
-        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.zero);
-        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 4);
-        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 8);
-        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 12);
-        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 4);
-        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 8);
-        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 12);
-        SpawnSnowMan(new NonActiveSnowMan(1, 2, 3, Teams.TEAM2), Vector3.left * 10);
     }
 
     public void InitializeBattle(List<NonActiveSnowMan> army1, List<NonActiveSnowMan> army2)
@@ -106,7 +104,9 @@ public class BattleSystem : MonoBehaviour {
 
         if (_team1Base == null || _team2Base == null)
         {
+            _gameOver = true;
             Debug.Log((_team1Base ?? _team2Base).BaseTeam + " Won !!!");
+            OnWinCondition((_team1Base ?? _team2Base).BaseTeam);
         }
     }
 
@@ -134,6 +134,11 @@ public class BattleSystem : MonoBehaviour {
 
     public Transform GetNearestTarget(SnowMan requesting)
     {
+        if (GameOver)
+        {
+            return null;
+        }
+
         SnowMan nearestSnowMan = GetNearestSnowManOfOppesiteTeam(requesting);
         if (nearestSnowMan == null)
         {

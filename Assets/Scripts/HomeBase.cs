@@ -20,5 +20,9 @@ public class HomeBase : MonoBehaviour {
         {
             _currentHealth -= enemy.Size * Mathf.Abs(enemy.MovementSpeed);
         }
+        if (_currentHealth <= 0)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

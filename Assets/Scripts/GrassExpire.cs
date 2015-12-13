@@ -6,9 +6,6 @@ public class GrassExpire : MonoBehaviour {
     Color currentColor;
     SpriteRenderer sRenderer;
 
-    [SerializeField]
-    float temp;
-
     void Start()
     {
         sRenderer = transform.FindChild("SnowLayer").GetComponent<SpriteRenderer>();
@@ -21,8 +18,6 @@ public class GrassExpire : MonoBehaviour {
         currentColor.a += (GlobalVariables.instance.SnowRate * Time.deltaTime);
         sRenderer.material.color = currentColor;
         //this.transform.localScale = this.transform.localScale - ((Vector3.one * GlobalVariables.instance.SnowRate) * Time.deltaTime);
-
-        temp = currentColor.a;
 
         if (currentColor.a >= 5)
         {

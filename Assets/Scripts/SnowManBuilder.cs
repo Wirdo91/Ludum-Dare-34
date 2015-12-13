@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class SnowManBuilder : MonoBehaviour {
 
     List<SnowBallMovement> _balls;
-    int _currentIndex = 0;
 
     BattleSystem _battleSystem;
     HomeBase _localHomeBase;

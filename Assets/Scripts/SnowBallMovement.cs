@@ -31,15 +31,22 @@ public class SnowBallMovement : MonoBehaviour {
         _currentThickness = GlobalVariables.instance.SnowBallInitialSize;
         _terrainHandler = GameObject.Find("World").GetComponent<TerrainHandler>();
         col = this.GetComponent<SphereCollider>();
+
+        FindObjectOfType<BattleSystem>().OnWinCondition += OnWinCondition;
+    }
+
+    void OnWinCondition(Teams winningTeam)
+    {
+        _inPlay = false;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        _currentThickness += (_terrainHandler.GetSnow(this.transform) * Time.deltaTime * GlobalVariables.instance.PickUpRate) * _pickupmodifier.Evaluate(CurrentThickness / _maxsize);
         if (_inPlay)
         {
-            _currentThickness += GlobalVariables.instance.PickUpRate * Time.deltaTime;
+            _currentThickness += (_terrainHandler.GetSnow(this.transform) * Time.deltaTime * GlobalVariables.instance.PickUpRate) * _pickupmodifier.Evaluate(CurrentThickness / _maxsize);
+            //_currentThickness += GlobalVariables.instance.PickUpRate * Time.deltaTime;
 
             col.radius = CurrentThickness / 2;
 
@@ -53,7 +60,7 @@ public class SnowBallMovement : MonoBehaviour {
     void OnTriggerEnter(Collider col)
     {
         SnowManBuilder builder = col.GetComponent<SnowManBuilder>();
-        if (builder != null && builder.Team == this.CurrentTeam)
+        if (builder != null && builder.Team == this.CurrentTeam && CurrentThickness > GlobalVariables.instance.SnowBallMinSize)
         {
             builder.TransferBall(this);
             _player.RemoveBallReference();
