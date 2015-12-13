@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour {
     float _playerCurrentMoveSpeed = 0f;
     public float PlayerCurrentMoveSpeed { get { return _playerCurrentMoveSpeed; } }
 
+    CapsuleCollider collider;
+
     [SerializeField]
     KeyCode _turnLeftButton;
     [SerializeField]
@@ -32,6 +34,8 @@ public class PlayerMovement : MonoBehaviour {
     void Start()
     {
         _playerDirectionVector = _initialDirection;
+
+        collider = this.GetComponent<CapsuleCollider>();
 
         if (_currentSnowBall == null)
         {
@@ -71,8 +75,13 @@ public class PlayerMovement : MonoBehaviour {
         {
             transform.position += (_playerDirectionVector * _playerCurrentMoveSpeed * Time.deltaTime);
         }
-        _playerObject.localPosition = _playerDirectionVector * -((_currentSnowBall.CurrentThickness / 2) + .5f);
-        _playerObject.LookAt(this.transform.position);
+        this.transform.LookAt(this.transform.position + PlayerDirectionVector);
+        _playerObject.localPosition = Vector3.forward * -((_currentSnowBall.CurrentThickness / 2) + .5f);
+        //_playerObject.LookAt(this.transform.position);
+
+        collider.height = 1 + _currentSnowBall.CurrentThickness;
+        collider.center = new Vector3(0, _currentSnowBall.transform.localPosition.y, -.5f);
+        collider.radius = _currentSnowBall.CurrentThickness / 2;
     }
 
     public void RemoveBallReference()
