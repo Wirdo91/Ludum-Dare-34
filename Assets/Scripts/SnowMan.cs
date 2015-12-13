@@ -23,6 +23,9 @@ public class SnowMan : MonoBehaviour {
     float _middle;
     float _top;
 
+    [SerializeField]
+    GameObject _topHat;
+
     public float Size { get { return (_bottom + _middle + _top) / 3; } }
 
     float _currentMovementSpeed = 0;
@@ -34,6 +37,9 @@ public class SnowMan : MonoBehaviour {
     //TODO Movement speed dependent on size
     float _maxMovementSpeed;
     Vector3 _movementDirection = Vector3.zero;
+
+    float _pushedSpeed = 0f;
+    Vector3 _pushedDirection = Vector3.zero;
 
     CapsuleCollider _collider;
 
@@ -61,7 +67,7 @@ public class SnowMan : MonoBehaviour {
         _currentHealth = (_bottom * 3 + _middle * 2 + _top) *10;
 
         //TODO Movement speed dependent on size
-        _maxMovementSpeed = 5f;
+        _maxMovementSpeed = 10f;
 
         _battleController = GameObject.FindObjectOfType<BattleSystem>();
 
@@ -75,23 +81,33 @@ public class SnowMan : MonoBehaviour {
 
     public void Create()
     {
+        //Add bottom
         GameObject ball = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         ball.transform.localScale = Vector3.one * _bottom;
         ball.transform.position = new Vector3(this.transform.position.x, (_bottom / 2) - (_bottom / 10), this.transform.position.z);
         ball.transform.parent = this.transform;
         Destroy(ball.GetComponent<SphereCollider>());
 
+        //Add middle
         ball = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         ball.transform.localScale = Vector3.one * _middle;
         ball.transform.position = new Vector3(this.transform.position.x, _bottom - (_bottom / 10) + (_middle / 2) - (_middle / 10), this.transform.position.z);
         ball.transform.parent = this.transform;
         Destroy(ball.GetComponent<SphereCollider>());
 
+        //Add top
         ball = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         ball.transform.localScale = Vector3.one * _top;
         ball.transform.position = new Vector3(this.transform.position.x, _bottom - (_bottom / 10) + _middle - (_middle / 10) + (_top / 2) - (_top / 10), this.transform.position.z);
         ball.transform.parent = this.transform;
         Destroy(ball.GetComponent<SphereCollider>());
+
+        //Add hat to top
+        GameObject hat = Instantiate(_topHat);
+        hat.transform.position = ball.transform.position;
+        hat.transform.localScale = ball.transform.localScale;
+        hat.transform.parent = this.transform;
+        hat.GetComponent<HatColor>().SetTeamMaterial(GlobalVariables.instance.GetTeamMaterial(this.CurrentTeam));
 
         _collider.height = _bottom + _middle + _top;
         _collider.radius = Mathf.Max(_bottom, _middle, _top) / 2;
@@ -126,25 +142,49 @@ public class SnowMan : MonoBehaviour {
         
         _currentMovementSpeed = Mathf.Lerp(_currentMovementSpeed, _maxMovementSpeed, GlobalVariables.instance.SnowManAcceleration * Time.deltaTime);
 
+        if (_pushedSpeed <= 0)
+        {
+            _pushedSpeed = 0;
+            _pushedDirection = Vector3.zero;
+        }
+        else
+        {
+            _pushedSpeed -= 20 * Time.deltaTime;
+        }
+
         _movementDirection = (_currentOpponent.transform.position - this.transform.position).normalized;
 
         this.transform.Translate(_movementDirection * _currentMovementSpeed * Time.deltaTime);
+
+        this.transform.Translate(_pushedDirection * _pushedSpeed * Time.deltaTime);
+        Debug.DrawRay(this.transform.position + Vector3.up * 5, _movementDirection * 5, Color.green);
     }
+    [SerializeField]
+    GameObject newestCollision;
 
     void OnCollisionEnter(Collision col)
     {
+        _currentMovementSpeed /= 2;
+
+        newestCollision = col.gameObject;
         SnowMan op = col.gameObject.GetComponent<SnowMan>();
         if (op != null)
         {
-            _currentMovementSpeed -= (op.Size * 2 + Mathf.Abs(op._currentMovementSpeed));
+            _pushedDirection = -(col.transform.position - this.transform.position).normalized;
+            _pushedSpeed = (op.Size * 2 + Mathf.Abs(op._currentMovementSpeed));
+            //_currentMovementSpeed -= (op.Size * 2 + Mathf.Abs(op._currentMovementSpeed));
             op.Damage(this);
+            return;
         }
 
         HomeBase hb = col.gameObject.GetComponent<HomeBase>();
         if (hb != null)
         {
+            _pushedDirection = -(col.transform.position - this.transform.position).normalized;
+            _pushedSpeed = _currentMovementSpeed * 2; ;
             hb.Damage(this);
-            _currentMovementSpeed *= -2;
+            //_currentMovementSpeed *= -2;
+            return;
         }
     }
 

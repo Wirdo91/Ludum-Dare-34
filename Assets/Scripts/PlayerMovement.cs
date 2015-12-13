@@ -11,6 +11,14 @@ public class PlayerMovement : MonoBehaviour {
     float _playerCurrentMoveSpeed = 0f;
     public float PlayerCurrentMoveSpeed { get { return _playerCurrentMoveSpeed; } }
 
+    [SerializeField]
+    KeyCode _turnLeftButton;
+    [SerializeField]
+    KeyCode _turnRightButton;
+
+    [SerializeField]
+    Vector3 _initialDirection = Vector3.forward;
+
     SnowBallMovement _currentSnowBall;
     Transform _playerObject;
 
@@ -23,7 +31,7 @@ public class PlayerMovement : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        _playerDirectionVector = Vector3.forward;
+        _playerDirectionVector = _initialDirection;
 
         if (_currentSnowBall == null)
         {
@@ -32,32 +40,28 @@ public class PlayerMovement : MonoBehaviour {
 
         _playerObject = transform.FindChild("Player");
 
-        //HACK temp code for battle testing
-        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.zero);
-        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 4);
-        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 8);
-        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 12);
-        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 4);
-        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 8);
-        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 12);
-        FindObjectOfType<BattleSystem>().SpawnSnowMan(new NonActiveSnowMan(1, 2, 3, Teams.TEAM2), Vector3.left * 10);
-
         //transform.GetChild(0).localPosition = _playerDirectionVector * -GlobalVariables.instance.SnowBallInitialSize;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        if (_currentSnowBall == null)
+        {
+            CreateNewSnowBall();
+            _playerDirectionVector *= -1;
+        }
+
         if (_playerCurrentMoveSpeed < GlobalVariables.instance.PlayerMaxMoveSpeed)
         {
             _playerCurrentMoveSpeed = Mathf.Lerp(_playerCurrentMoveSpeed, GlobalVariables.instance.PlayerMaxMoveSpeed, GlobalVariables.instance.PlayerAcceleration * Time.deltaTime);
         }
 
-        if (Input.GetKey(GlobalVariables.instance.Player1TurnLeftButton))
+        if (Input.GetKey(_turnLeftButton))
         {
             _playerDirectionVector = Quaternion.Euler(0, -GlobalVariables.instance.PlayerTurningSpeed * Time.deltaTime, 0) * _playerDirectionVector;
         }
-        else if (Input.GetKey(GlobalVariables.instance.Player2TurnRightButton))
+        else if (Input.GetKey(_turnRightButton))
         {
             _playerDirectionVector = Quaternion.Euler(0, GlobalVariables.instance.PlayerTurningSpeed * Time.deltaTime, 0) * _playerDirectionVector;
         }
@@ -68,6 +72,12 @@ public class PlayerMovement : MonoBehaviour {
             transform.position += (_playerDirectionVector * _playerCurrentMoveSpeed * Time.deltaTime);
         }
         _playerObject.localPosition = _playerDirectionVector * -((_currentSnowBall.CurrentThickness / 2) + .5f);
+        _playerObject.LookAt(this.transform.position);
+    }
+
+    public void RemoveBallReference()
+    {
+        _currentSnowBall = null;
     }
 
     void CreateNewSnowBall()

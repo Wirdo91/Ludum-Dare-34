@@ -38,20 +38,25 @@ public class GlobalVariables : MonoBehaviour {
     public float SnowManAcceleration { get { return _snowManAcceleration; } }
 
     [SerializeField]
-    KeyCode _player1TurnLeftButton;
-    public KeyCode Player1TurnLeftButton { get { return _player1TurnLeftButton; } }
+    Material _player1Material;
+    public Material Player1Material { get { return _player1Material; } }
 
     [SerializeField]
-    KeyCode _player1TurnRightButton;
-    public KeyCode Player1TurnRightButton { get { return _player2TurnRightButton; } }
+    Material _player2Material;
+    public Material Player2Material { get { return _player2Material; } }
 
-    [SerializeField]
-    KeyCode _player2TurnLeftButton;
-    public KeyCode Player2TurnLeftButton { get { return _player1TurnLeftButton; } }
-
-    [SerializeField]
-    KeyCode _player2TurnRightButton;
-    public KeyCode Player2TurnRightButton { get { return _player2TurnRightButton; } }
+    public Material GetTeamMaterial(Teams team)
+    {
+        switch(team)
+        {
+            case Teams.TEAM1:
+                return Player1Material;
+            case Teams.TEAM2:
+                return Player2Material;
+            default:
+                return null;
+        }
+    }
 
     void Awake()
     {

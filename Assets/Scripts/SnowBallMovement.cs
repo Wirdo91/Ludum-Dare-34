@@ -12,26 +12,48 @@ public class SnowBallMovement : MonoBehaviour {
     [SerializeField]
     GameObject _snowRemovedArea;
 
+    bool _inPlay = false;
+
+    SphereCollider col;
+
     //TODO If collided with snow, remove old, adjust value picked up dependent on alpha
 	void Start ()
     {
+        _inPlay = true;
         _player = GetComponentInParent<PlayerMovement>();
         _currentThickness = GlobalVariables.instance.SnowBallInitialSize;
+        col = this.GetComponent<SphereCollider>();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        _currentThickness += GlobalVariables.instance.PickUpRate * Time.deltaTime;
+        if (_inPlay)
+        {
+            _currentThickness += GlobalVariables.instance.PickUpRate * Time.deltaTime;
 
-        this.transform.GetChild(0).localScale = Vector3.one * _currentThickness;
+            col.radius = CurrentThickness / 2;
 
-        this.transform.position =
-            new Vector3(transform.position.x, _currentThickness / 2, transform.position.z);
+            this.transform.GetChild(0).localScale = Vector3.one * _currentThickness;
 
-        GameObject currentGrass = Instantiate(_snowRemovedArea);
-        currentGrass.transform.localScale = Vector3.one * _currentThickness;
-        currentGrass.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
-        currentGrass.transform.rotation = Quaternion.LookRotation(_player.PlayerDirectionVector);
+            this.transform.position =
+                new Vector3(transform.position.x, _currentThickness / 2, transform.position.z);
+
+            /*GameObject currentGrass = Instantiate(_snowRemovedArea);
+            currentGrass.transform.localScale = Vector3.one * _currentThickness;
+            currentGrass.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
+            currentGrass.transform.rotation = Quaternion.LookRotation(_player.PlayerDirectionVector);*/
+        }
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        SnowManBuilder builder = col.GetComponent<SnowManBuilder>();
+        if (builder != null)
+        {
+            builder.TransferBall(this);
+            _player.RemoveBallReference();
+            _inPlay = false;
+        }
     }
 }

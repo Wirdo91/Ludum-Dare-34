@@ -51,6 +51,14 @@ public class BattleSystem : MonoBehaviour {
                 }
             }
         }
+        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.zero);
+        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 4);
+        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 8);
+        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.forward * 12);
+        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 4);
+        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 8);
+        SpawnSnowMan(new NonActiveSnowMan(3, 2, 1, Teams.TEAM1), Vector3.back * 12);
+        SpawnSnowMan(new NonActiveSnowMan(1, 2, 3, Teams.TEAM2), Vector3.left * 10);
     }
 
     public void InitializeBattle(List<NonActiveSnowMan> army1, List<NonActiveSnowMan> army2)
@@ -175,7 +183,7 @@ public class BattleSystem : MonoBehaviour {
     {
         if (snowMen.Count <= 0)
         {
-            Debug.LogWarning("The list is empty, returning null");
+            //Debug.LogWarning("The list is empty, returning null");
             return null;
         }
 
