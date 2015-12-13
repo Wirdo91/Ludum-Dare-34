@@ -8,6 +8,8 @@ public class TerrainHandler : MonoBehaviour
 
     int pickupsize;
 
+    [SerializeField]
+    SnowHandler _snowhandler;
 
     // Use this for initialization
     void Start ()
@@ -16,6 +18,78 @@ public class TerrainHandler : MonoBehaviour
         resolution = terrain.terrainData.alphamapResolution;
         pickupsize = (int)(terrain.terrainData.alphamapResolution / terrain.terrainData.size.x);
         StartCoroutine(LetitSnow());
+    }
+
+    //TODO: Add RenderSettings Fog and snow drop rate.
+    public void NoSnow()
+    {
+        GlobalVariables.instance.SnowRate = 0;
+        _snowhandler.NoSnow();
+        _snowhandler.NoSnowFog();
+        _snowhandler.NoGroundFog();
+    }
+
+    public void MildSnow()
+    {
+        _snowhandler.MildSnow();
+        _snowhandler.NoSnowFog();
+        _snowhandler.NoGroundFog();
+    }
+
+    public void MediumSnow()
+    {
+        _snowhandler.MediumSnow();
+        _snowhandler.NoSnowFog();
+        _snowhandler.NoGroundFog();
+    }
+
+    public void HeavySnow()
+    {
+        _snowhandler.HeavySnow();
+        _snowhandler.NoSnowFog();
+        _snowhandler.NoGroundFog();
+    }
+
+    public void MildStorm()
+    {
+        _snowhandler.NoSnow();
+        _snowhandler.MildSnowFog();
+        _snowhandler.NoGroundFog();
+    }
+
+    public void MediumStorm()
+    {
+        _snowhandler.NoSnow();
+        _snowhandler.MediumSnowFog();
+        _snowhandler.GroundFog();
+    }
+
+    public void HeavyStorm()
+    {
+        _snowhandler.NoSnow();
+        _snowhandler.HeavySnowFog();
+        _snowhandler.HeavyGroundFog();
+    }
+
+    public void MildSnowStorm()
+    {
+        _snowhandler.MildSnow();
+        _snowhandler.MildSnowFog();
+        _snowhandler.NoGroundFog();
+    }
+
+    public void MediumSnowStorm()
+    {
+        _snowhandler.MediumSnow();
+        _snowhandler.MediumSnowFog();
+        _snowhandler.GroundFog();
+    }
+
+    public void HeavySnowStorm()
+    {
+        _snowhandler.HeavySnow();
+        _snowhandler.HeavySnowFog();
+        _snowhandler.HeavyGroundFog();
     }
 
     public void ResetTerrain()

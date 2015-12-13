@@ -11,7 +11,7 @@ public class GlobalVariables : MonoBehaviour {
 
     [SerializeField]
     float _snowRate;
-    public float SnowRate { get { return _snowRate; } }
+    public float SnowRate { get { return _snowRate; } set { _snowRate = value; } }
 
     [SerializeField]
     float _pickUpRate;
