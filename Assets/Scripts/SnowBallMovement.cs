@@ -29,9 +29,9 @@ public class SnowBallMovement : MonoBehaviour {
         this.transform.position =
             new Vector3(transform.position.x, _currentThickness / 2, transform.position.z);
 
-        GameObject currentGrass = Instantiate(_snowRemovedArea);
+        /*GameObject currentGrass = Instantiate(_snowRemovedArea);
         currentGrass.transform.localScale = Vector3.one * _currentThickness;
         currentGrass.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
-        currentGrass.transform.rotation = Quaternion.LookRotation(_player.PlayerDirectionVector);
+        currentGrass.transform.rotation = Quaternion.LookRotation(_player.PlayerDirectionVector);*/
     }
 }
