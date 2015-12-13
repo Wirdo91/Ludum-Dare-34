@@ -114,7 +114,7 @@ public class SnowMan : MonoBehaviour {
         _collider.center = new Vector3(0, _collider.height / 2, 0);
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (_currentHealth < 0f)
         {
@@ -154,6 +154,9 @@ public class SnowMan : MonoBehaviour {
 
         _movementDirection = (_currentOpponent.transform.position - this.transform.position).normalized;
 
+        //this.GetComponent<Rigidbody>().velocity = (_movementDirection * _currentMovementSpeed);
+        //this.GetComponent<Rigidbody>().velocity += (_pushedDirection * _pushedSpeed);
+
         this.transform.Translate(_movementDirection * _currentMovementSpeed * Time.deltaTime);
 
         this.transform.Translate(_pushedDirection * _pushedSpeed * Time.deltaTime);
@@ -181,7 +184,7 @@ public class SnowMan : MonoBehaviour {
         if (hb != null)
         {
             _pushedDirection = -(col.transform.position - this.transform.position).normalized;
-            _pushedSpeed = _currentMovementSpeed * 2; ;
+            _pushedSpeed = _currentMovementSpeed * 2;
             hb.Damage(this);
             //_currentMovementSpeed *= -2;
             return;
