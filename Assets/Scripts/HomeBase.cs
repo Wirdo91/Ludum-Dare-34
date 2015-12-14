@@ -9,9 +9,26 @@ public class HomeBase : MonoBehaviour {
     Teams _baseTeam;
     public Teams BaseTeam { get { return _baseTeam; } }
 
+    float _speedOfDestruction = 2f;
+
+    [SerializeField]
+    GameObject _deathParticle;
+
+    [SerializeField]
+    bool destroy = false;
+
     void Start()
     {
         _currentHealth = GlobalVariables.instance.HomeBaseStartHealth;
+    }
+
+    void Update()
+    {
+        if (destroy)
+        {
+            destroy = false;
+            Death();
+        }
     }
 
     public void SetBaseTeam(Teams team)
@@ -22,6 +39,19 @@ public class HomeBase : MonoBehaviour {
 
     void Death()
     {
+        Instantiate(_deathParticle, this.transform.position, Quaternion.identity);
+        StartCoroutine(AnimateDestruction());
+    }
+
+    float _shake = .3f;
+    IEnumerator AnimateDestruction()
+    {
+        while(this.transform.position.y > -10)
+        {
+            this.transform.Translate(new Vector3(Random.Range(-_shake, _shake), -_speedOfDestruction * Time.deltaTime, Random.Range(-_shake, _shake)));
+            yield return null;
+        }
+        
         Destroy(this.gameObject);
     }
 
