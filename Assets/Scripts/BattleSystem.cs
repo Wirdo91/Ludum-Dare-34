@@ -38,6 +38,9 @@ public class BattleSystem : MonoBehaviour {
     [SerializeField]
     PlayerMovement _player1Object, _player2Object;
 
+    [SerializeField]
+    UnityEngine.UI.Text _gameOverText;
+
     public void DeactivatePlayers()
     {
         _player1Object.gameObject.SetActive(false);
@@ -293,6 +296,19 @@ public class BattleSystem : MonoBehaviour {
                 SpawnSnowMan(army2[middleIndex - i], _player2Anchor.position + Vector3.left * (4 * (i + 1)));
             }
         }
+    }
+
+    public void ShowGameOver(Teams losingteam)
+    {
+        if (losingteam == Teams.TEAM1)
+        {
+            _gameOverText.text = "Player 2 won the game!";
+        }
+        else if (losingteam == Teams.TEAM2)
+        {
+            _gameOverText.text = "Player 1 won the game!";
+        }
+        _gameOverText.gameObject.SetActive(true);
     }
 
     public Transform GetNearestTarget(SnowMan requesting)

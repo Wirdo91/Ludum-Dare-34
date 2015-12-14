@@ -39,6 +39,8 @@ public class HomeBase : MonoBehaviour {
 
     void Death()
     {
+        FindObjectOfType<BattleSystem>().ShowGameOver(this.BaseTeam);
+
         _deathParticle = Instantiate(_deathParticle);//, this.transform.position, Quaternion.identity);
         _deathParticle.transform.position = this.transform.position;
         _deathParticle.transform.localScale = Vector3.one * 3;
