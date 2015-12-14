@@ -27,6 +27,9 @@ public class SnowMan : MonoBehaviour {
     GameObject _topHat;
 
     [SerializeField]
+    GameObject _deathParticle;
+
+    [SerializeField]
     public float _recheckTargetDelay = 5f;
     public float _recheckTargetTimer = 0f;
 
@@ -58,6 +61,9 @@ public class SnowMan : MonoBehaviour {
     BattleSystem _battleController;
 
     Transform _currentOpponent;
+
+    [SerializeField]
+    bool kill = false;
 
     public void SetValues(float bottom, float middle, float top, Teams team)
     {
@@ -138,6 +144,8 @@ public class SnowMan : MonoBehaviour {
 
     void Death()
     {
+        GameObject particle = (GameObject)Instantiate(_deathParticle, this.transform.position, Quaternion.identity);
+
         Transform internalBall;
         //Death
         for (int i = 0; i < this.transform.childCount; i++)
@@ -148,12 +156,22 @@ public class SnowMan : MonoBehaviour {
             internalBall.gameObject.AddComponent<BallExpire>();
         }
         internalBall = null;
+        Destroy(particle, 1f);
         Destroy(this.gameObject);
     }
 
     public void QuickDestroy()
     {
         Destroy(this.gameObject);
+    }
+
+    void Update()
+    {
+        if (kill)
+        {
+            kill = false;
+            Kill();
+        }
     }
 
     void FixedUpdate()
