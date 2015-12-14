@@ -12,6 +12,9 @@ public class TerrainHandler : MonoBehaviour
     [SerializeField]
     SnowHandler _snowhandler;
 
+    [SerializeField]
+    int _targetTrees;
+
     // Use this for initialization
     void Start ()
     {
@@ -95,6 +98,22 @@ public class TerrainHandler : MonoBehaviour
 
     public void ResetTerrain()
     {
+        terrain.terrainData.treeInstances = new TreeInstance[0];
+
+        for (int i = 0; i < _targetTrees; i++)
+        {
+            TreeInstance ti = new TreeInstance();
+            Vector3 pos = new Vector3(Random.Range(0.01f, 0.99f), 0, Random.Range(0.01f, 0.99f));
+
+            ti.position = pos;
+            ti.prototypeIndex = Random.Range(0, 14);
+            ti.heightScale = 1;
+            ti.widthScale = 1;
+            ti.color = Color.white;
+            ti.lightmapColor = Color.white;
+            terrain.AddTreeInstance(ti);
+            terrain.Flush();
+        }
         float[,,] alphas = terrain.terrainData.GetAlphamaps(0, 0, resolution, resolution);
         for (int i = 0; i < resolution; i++)
         {
