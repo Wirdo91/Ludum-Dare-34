@@ -51,7 +51,6 @@ public class BattleSystem : MonoBehaviour {
 
     private IEnumerator ResetBattleSystem()
     {
-        Debug.Log("Battle Reset");
         if (_team1 != null)
         {
             //Remove Armies
@@ -211,19 +210,33 @@ public class BattleSystem : MonoBehaviour {
 
     void Update()
     {
-        for (int i = _team1.Count - 1; i >= 0; i--)
+        if (_team1 != null)
         {
-            if (_team1[i] == null)
+            for (int i = _team1.Count - 1; i >= 0; i--)
             {
-                _team1.RemoveAt(i);
+                if (_team1[i] == null)
+                {
+                    _team1.RemoveAt(i);
+                }
             }
         }
-        for (int i = _team2.Count - 1; i >= 0; i--)
+        else
         {
-            if (_team2[i] == null)
+            _team1 = new List<SnowMan>();
+        }
+        if (_team2 != null)
+        {
+            for (int i = _team2.Count - 1; i >= 0; i--)
             {
-                _team2.RemoveAt(i);
+                if (_team2[i] == null)
+                {
+                    _team2.RemoveAt(i);
+                }
             }
+        }
+        else
+        {
+            _team1 = new List<SnowMan>();
         }
 
         if (GlobalVariables.instance.GameRunning)
