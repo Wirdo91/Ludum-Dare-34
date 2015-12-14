@@ -57,6 +57,14 @@ public class GlobalVariables : MonoBehaviour {
     bool _gameRunning;
     public bool GameRunning { get { return _gameRunning; } }
 
+    [SerializeField]
+    string[] _hints;
+
+    public string GetRandomHint()
+    {
+        return _hints[Random.Range(0, _hints.Length)];
+    }
+
     public void StartGame()
     {
         _gameRunning = true;

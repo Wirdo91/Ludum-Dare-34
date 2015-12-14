@@ -9,9 +9,13 @@ public class MenuManager : MonoBehaviour {
     BattleSystem battle;
 
     GameObject[] _deactivateOnMenu;
+    [SerializeField]
+    UnityEngine.UI.Text _hintText;
 
     void Start()
     {
+        _hintText.text = GlobalVariables.instance.GetRandomHint();
+
         SpawnShowArmy();
 
         battle.OnWinCondition += OnGameOver;
