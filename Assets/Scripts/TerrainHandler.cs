@@ -3,6 +3,7 @@ using System.Collections;
 
 public class TerrainHandler : MonoBehaviour
 {
+    [SerializeField]
     Terrain terrain;
     int resolution = 512;
 
