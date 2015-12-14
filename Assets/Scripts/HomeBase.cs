@@ -14,15 +14,29 @@ public class HomeBase : MonoBehaviour {
         _currentHealth = GlobalVariables.instance.HomeBaseStartHealth;
     }
 
+    public void SetBaseTeam(Teams team)
+    {
+        _baseTeam = team;
+        _currentHealth = GlobalVariables.instance.HomeBaseStartHealth;
+    }
+
+    void Death()
+    {
+        Destroy(this.gameObject);
+    }
+
     public void Damage(SnowMan enemy)
     {
-        if (enemy.CurrentTeam != _baseTeam)
+        if (GlobalVariables.instance.GameRunning)
         {
-            _currentHealth -= enemy.Size * Mathf.Abs(enemy.MovementSpeed);
-        }
-        if (_currentHealth <= 0)
-        {
-            Destroy(this.gameObject);
+            if (enemy.CurrentTeam != _baseTeam)
+            {
+                _currentHealth -= enemy.Size * Mathf.Abs(enemy.MovementSpeed);
+            }
+            if (_currentHealth <= 0)
+            {
+                Death();
+            }
         }
     }
 }

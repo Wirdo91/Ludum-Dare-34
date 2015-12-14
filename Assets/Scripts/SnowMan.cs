@@ -26,6 +26,10 @@ public class SnowMan : MonoBehaviour {
     [SerializeField]
     GameObject _topHat;
 
+    [SerializeField]
+    public float _recheckTargetDelay = 5f;
+    public float _recheckTargetTimer = 0f;
+
     public float Size { get { return (_bottom + _middle + _top) / 3; } }
 
     float _currentMovementSpeed = 0;
@@ -120,6 +124,14 @@ public class SnowMan : MonoBehaviour {
     {
         if (CurrentTeam != winningTeam)
         {
+            Kill();
+        }
+    }
+
+    public void Kill()
+    {
+        if (this != null)
+        {
             Death();
         }
     }
@@ -139,13 +151,18 @@ public class SnowMan : MonoBehaviour {
         Destroy(this.gameObject);
     }
 
+    public void QuickDestroy()
+    {
+        Destroy(this.gameObject);
+    }
+
     void FixedUpdate()
     {
         if (_currentHealth < 0f)
         {
-            Death();
+            Kill();
         }
-        if (_currentOpponent == null)
+        if (_currentOpponent == null || _recheckTargetTimer < 0)
         {
             _currentOpponent = _battleController.GetNearestTarget(this);
             //If no enemy exists
@@ -153,7 +170,9 @@ public class SnowMan : MonoBehaviour {
             {
                 return;
             }
+            _recheckTargetTimer = _recheckTargetDelay;
         }
+        _recheckTargetTimer -= Time.deltaTime;
         
         _currentMovementSpeed = Mathf.Lerp(_currentMovementSpeed, _maxMovementSpeed, GlobalVariables.instance.SnowManAcceleration * Time.deltaTime);
 
@@ -205,9 +224,12 @@ public class SnowMan : MonoBehaviour {
 
     void Damage(SnowMan enemy)
     {
-        if (enemy.CurrentTeam != this.CurrentTeam)
+        if (GlobalVariables.instance.GameRunning)
         {
-            _currentHealth -= enemy.Size * Mathf.Abs(enemy.MovementSpeed);
+            if (enemy.CurrentTeam != this.CurrentTeam)
+            {
+                _currentHealth -= enemy.Size * Mathf.Abs(enemy.MovementSpeed);
+            }
         }
     }
 }

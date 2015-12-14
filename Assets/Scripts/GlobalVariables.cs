@@ -53,6 +53,19 @@ public class GlobalVariables : MonoBehaviour {
     Material _player2Material;
     public Material Player2Material { get { return _player2Material; } }
 
+    [SerializeField]
+    bool _gameRunning;
+    public bool GameRunning { get { return _gameRunning; } }
+
+    public void StartGame()
+    {
+        _gameRunning = true;
+    }
+    public void PauseGame()
+    {
+        _gameRunning = false;
+    }
+
     public Material GetTeamMaterial(Teams team)
     {
         switch(team)

@@ -32,11 +32,19 @@ public class PlayerMovement : MonoBehaviour {
     public Teams PlayerTeam {  get { return _playerTeam; } }
 
     // Use this for initialization
-    void Start()
+
+    public void Reset()
     {
         _playerDirectionVector = _initialDirection;
+        if (_currentSnowBall != null)
+            Destroy(_currentSnowBall.gameObject);
+    }
 
+    void Start()
+    {
         EntireCollider = this.GetComponent<CapsuleCollider>();
+
+        Reset();
 
         if (_currentSnowBall == null)
         {
