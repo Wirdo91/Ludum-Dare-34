@@ -297,7 +297,7 @@ public class BattleSystem : MonoBehaviour {
 
     public Transform GetNearestTarget(SnowMan requesting)
     {
-        if (GameOver)
+        if (GameOver || requesting == null)
         {
             return null;
         }
@@ -316,15 +316,20 @@ public class BattleSystem : MonoBehaviour {
             }
         }
 
-        if (Vector3.Distance(requesting.transform.position, nearestSnowMan.transform.position) < 
-            Vector3.Distance(requesting.transform.position, GetEnemyBase(requesting).transform.position))
+        if (nearestSnowMan != null && GetEnemyBase(requesting) != null)
         {
-            return nearestSnowMan.transform;
+            if (Vector3.Distance(requesting.transform.position, nearestSnowMan.transform.position) <
+                Vector3.Distance(requesting.transform.position, GetEnemyBase(requesting).transform.position))
+            {
+                return nearestSnowMan.transform;
+            }
+            else
+            {
+                return GetEnemyBase(requesting).transform;
+            }
         }
-        else
-        {
-            return GetEnemyBase(requesting).transform;
-        }
+
+        return null;
     }
 
     HomeBase GetEnemyBase(SnowMan requesting)
