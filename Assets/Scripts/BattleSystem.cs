@@ -38,6 +38,9 @@ public class BattleSystem : MonoBehaviour {
     [SerializeField]
     PlayerMovement _player1Object, _player2Object;
 
+    [SerializeField]
+    UnityEngine.UI.Text _gameOverText;
+
     public void DeactivatePlayers()
     {
         _player1Object.gameObject.SetActive(false);
@@ -295,9 +298,22 @@ public class BattleSystem : MonoBehaviour {
         }
     }
 
+    public void ShowGameOver(Teams losingteam)
+    {
+        if (losingteam == Teams.TEAM1)
+        {
+            _gameOverText.text = "Player 2 won the game!";
+        }
+        else if (losingteam == Teams.TEAM2)
+        {
+            _gameOverText.text = "Player 1 won the game!";
+        }
+        _gameOverText.gameObject.SetActive(true);
+    }
+
     public Transform GetNearestTarget(SnowMan requesting)
     {
-        if (GameOver)
+        if (GameOver || requesting == null)
         {
             return null;
         }
@@ -316,15 +332,20 @@ public class BattleSystem : MonoBehaviour {
             }
         }
 
-        if (Vector3.Distance(requesting.transform.position, nearestSnowMan.transform.position) < 
-            Vector3.Distance(requesting.transform.position, GetEnemyBase(requesting).transform.position))
+        if (nearestSnowMan != null && GetEnemyBase(requesting) != null)
         {
-            return nearestSnowMan.transform;
+            if (Vector3.Distance(requesting.transform.position, nearestSnowMan.transform.position) <
+                Vector3.Distance(requesting.transform.position, GetEnemyBase(requesting).transform.position))
+            {
+                return nearestSnowMan.transform;
+            }
+            else
+            {
+                return GetEnemyBase(requesting).transform;
+            }
         }
-        else
-        {
-            return GetEnemyBase(requesting).transform;
-        }
+
+        return null;
     }
 
     HomeBase GetEnemyBase(SnowMan requesting)

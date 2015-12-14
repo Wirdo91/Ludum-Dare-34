@@ -7,7 +7,9 @@ public class MenuManager : MonoBehaviour {
     TerrainHandler terrain;
     [SerializeField]
     BattleSystem battle;
-
+    [SerializeField]
+    Camera _menuCamera;
+    [SerializeField]
     GameObject[] _deactivateOnMenu;
     [SerializeField]
     UnityEngine.UI.Text _hintText;
@@ -58,6 +60,7 @@ public class MenuManager : MonoBehaviour {
             }
         }
 
+        _menuCamera.enabled = false;
         this.gameObject.SetActive(false);
     }
 

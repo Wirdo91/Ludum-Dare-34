@@ -39,7 +39,11 @@ public class HomeBase : MonoBehaviour {
 
     void Death()
     {
-        Instantiate(_deathParticle, this.transform.position, Quaternion.identity);
+        FindObjectOfType<BattleSystem>().ShowGameOver(this.BaseTeam);
+
+        _deathParticle = Instantiate(_deathParticle);//, this.transform.position, Quaternion.identity);
+        _deathParticle.transform.position = this.transform.position;
+        _deathParticle.transform.localScale = Vector3.one * 3;
         StartCoroutine(AnimateDestruction());
     }
 
@@ -51,7 +55,8 @@ public class HomeBase : MonoBehaviour {
             this.transform.Translate(new Vector3(Random.Range(-_shake, _shake), -_speedOfDestruction * Time.deltaTime, Random.Range(-_shake, _shake)));
             yield return null;
         }
-        
+
+        _deathParticle.GetComponent<ParticleSystem>().loop = false;
         Destroy(this.gameObject);
     }
 
