@@ -33,8 +33,14 @@ public class MenuManager : MonoBehaviour {
         battle.DeactivatePlayers();
     }
 
+    public void Restart()
+    {
+        Application.LoadLevel(Application.loadedLevel);
+    }
+
     void OnGameOver(Teams team)
     {
+        /*
         Application.LoadLevel(Application.loadedLevel);
         this.gameObject.SetActive(true);
 
@@ -44,7 +50,7 @@ public class MenuManager : MonoBehaviour {
             {
                 go.SetActive(false);
             }
-        }
+        }*/
     }
 
     public void NewGame()

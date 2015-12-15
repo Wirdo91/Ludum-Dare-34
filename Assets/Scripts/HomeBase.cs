@@ -50,6 +50,7 @@ public class HomeBase : MonoBehaviour {
     float _shake = .3f;
     IEnumerator AnimateDestruction()
     {
+        this.GetComponent<AudioSource>().Play();
         while(this.transform.position.y > -10)
         {
             this.transform.Translate(new Vector3(Random.Range(-_shake, _shake), -_speedOfDestruction * Time.deltaTime, Random.Range(-_shake, _shake)));

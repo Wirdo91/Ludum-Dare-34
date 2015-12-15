@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TerrainHandler : MonoBehaviour
 {
@@ -13,7 +14,23 @@ public class TerrainHandler : MonoBehaviour
     SnowHandler _snowhandler;
 
     [SerializeField]
+    GameObject[] _trees;
+
+    [SerializeField]
     int _targetTrees;
+
+    [SerializeField]
+    AudioClip _mildwind;
+
+    [SerializeField]
+    AudioClip _heavywind;
+
+    AudioSource windsource;
+
+    [SerializeField]
+    WindZone wind;
+
+    float _weatherchangetimer = 30;
 
     // Use this for initialization
     void Start ()
@@ -22,90 +39,222 @@ public class TerrainHandler : MonoBehaviour
         resolution = terrain.terrainData.alphamapResolution;
         pickupsize = (int)(terrain.terrainData.alphamapResolution / terrain.terrainData.size.x);
         StartCoroutine(LetitSnow());
+        windsource = this.gameObject.AddComponent<AudioSource>();
+        windsource.loop = true;
+        windsource.playOnAwake = false;
+        windsource.Pause();
+        windsource.volume = 0.5f;
+
+        TreePrototype[] temptp = new TreePrototype[_trees.Length];
+
+        for (int i = 0; i < _trees.Length; i++)
+        {
+            TreePrototype tp = new TreePrototype();
+            tp.prefab = _trees[i];
+            temptp[i] = tp;
+        }
+
+        terrain.terrainData.treePrototypes = temptp;
+    }
+
+    void Update()
+    {
+        _weatherchangetimer += Time.deltaTime;
+
+        if (_weatherchangetimer > 30)
+        {
+            _weatherchangetimer = 0;
+
+            int i = Random.Range(0, 10);
+            Debug.Log(i);
+            switch (i)
+            {
+                case 0:
+                    NoSnow();
+                    break;
+                case 1:
+                    MildSnow();
+                    break;
+                case 2:
+                    MediumSnow();
+                    break;
+                case 3:
+                    HeavySnow();
+                    break;
+                case 4:
+                    MildStorm();
+                    break;
+                case 5:
+                    MediumStorm();
+                    break;
+                case 6:
+                    HeavyStorm();
+                    break;
+                case 7:
+                    MildSnowStorm();
+                    break;
+                case 8:
+                    MediumSnowStorm();
+                    break;
+                case 9:
+                    HeavySnowStorm();
+                    break;
+            }
+        }
     }
 
     //TODO: Add RenderSettings Fog and snow drop rate.
     public void NoSnow()
     {
+        wind.windMain = 0.1f;
+        wind.windTurbulence = 0.1f;
+
         GlobalVariables.instance.SnowRate = 0;
         _snowhandler.NoSnow();
         _snowhandler.NoSnowFog();
         _snowhandler.NoGroundFog();
+        windsource.Pause();
     }
 
     public void MildSnow()
     {
+        wind.windMain = 0.2f;
+        wind.windTurbulence = 0.2f;
+        wind.windPulseFrequency = 0.5f;
+        wind.windPulseMagnitude = 0.01f;
+        GlobalVariables.instance.SnowRate = 0.5f;
         _snowhandler.MildSnow();
         _snowhandler.NoSnowFog();
         _snowhandler.NoGroundFog();
+        windsource.Pause();
     }
 
     public void MediumSnow()
     {
+        wind.windMain = 0.35f;
+        wind.windTurbulence = 0.35f;
+        wind.windPulseFrequency = 0.5f;
+        wind.windPulseMagnitude = 0.01f;
+        GlobalVariables.instance.SnowRate = 1;
         _snowhandler.MediumSnow();
         _snowhandler.NoSnowFog();
         _snowhandler.NoGroundFog();
+        windsource.Pause();
     }
 
     public void HeavySnow()
     {
+        wind.windMain = 0.5f;
+        wind.windTurbulence = 0.5f;
+        wind.windPulseFrequency = 0.5f;
+        wind.windPulseMagnitude = 0.01f;
+        GlobalVariables.instance.SnowRate = 2;
         _snowhandler.HeavySnow();
         _snowhandler.NoSnowFog();
         _snowhandler.NoGroundFog();
+        windsource.Pause();
     }
 
     public void MildStorm()
     {
+        wind.windMain = 1f;
+        wind.windTurbulence = 1f;
+        wind.windPulseFrequency = 1;
+        wind.windPulseMagnitude = 0.125f;
+        GlobalVariables.instance.SnowRate = 0.1f;
         _snowhandler.NoSnow();
         _snowhandler.MildSnowFog();
         _snowhandler.NoGroundFog();
+        windsource.clip = _mildwind;
+        windsource.Play();
     }
 
     public void MediumStorm()
     {
+        wind.windMain = 1.5f;
+        wind.windTurbulence = 1.5f;
+        wind.windPulseFrequency = 1.5f;
+        wind.windPulseMagnitude = 0.25f;
+        GlobalVariables.instance.SnowRate = 0.25f;
         _snowhandler.NoSnow();
         _snowhandler.MediumSnowFog();
         _snowhandler.GroundFog();
+        windsource.clip = _mildwind;
+        windsource.Play();
     }
 
     public void HeavyStorm()
     {
+        wind.windMain = 2f;
+        wind.windTurbulence = 2f;
+        wind.windPulseFrequency = 2f;
+        wind.windPulseMagnitude = 0.5f;
+        GlobalVariables.instance.SnowRate = 0.5f;
         _snowhandler.NoSnow();
         _snowhandler.HeavySnowFog();
         _snowhandler.HeavyGroundFog();
+        windsource.clip = _heavywind;
+        windsource.Play();
     }
 
     public void MildSnowStorm()
     {
+        wind.windMain = 1f;
+        wind.windTurbulence = 1f;
+        wind.windPulseFrequency = 1;
+        wind.windPulseMagnitude = 0.125f;
+        GlobalVariables.instance.SnowRate = 1f;
         _snowhandler.MildSnow();
         _snowhandler.MildSnowFog();
         _snowhandler.NoGroundFog();
+        windsource.clip = _mildwind;
+        windsource.Play();
     }
 
     public void MediumSnowStorm()
     {
+        wind.windMain = 1.5f;
+        wind.windTurbulence = 1.5f;
+        wind.windPulseFrequency = 1.5f;
+        wind.windPulseMagnitude = 0.25f;
+        GlobalVariables.instance.SnowRate = 2f;
         _snowhandler.MediumSnow();
         _snowhandler.MediumSnowFog();
         _snowhandler.GroundFog();
+        windsource.clip = _heavywind;
+        windsource.Play();
     }
 
     public void HeavySnowStorm()
     {
+        wind.windMain = 2f;
+        wind.windTurbulence = 2f;
+        wind.windPulseFrequency = 2f;
+        wind.windPulseMagnitude = 0.5f;
+        GlobalVariables.instance.SnowRate = 3f;
         _snowhandler.HeavySnow();
         _snowhandler.HeavySnowFog();
         _snowhandler.HeavyGroundFog();
+        windsource.clip = _heavywind;
+        windsource.Play();
     }
 
     public void ResetTerrain()
     {
+        _targetTrees = Random.Range(10, 21);
         terrain.terrainData.treeInstances = new TreeInstance[0];
-
         for (int i = 0; i < _targetTrees; i++)
         {
             TreeInstance ti = new TreeInstance();
-            Vector3 pos = new Vector3(Random.Range(0.01f, 0.99f), 0, Random.Range(0.01f, 0.99f));
+            Vector3 pos = new Vector3(Random.Range(1, 126), 0, Random.Range(1, 126));
 
-            ti.position = pos;
+            Rect rl = new Rect(30, 5, 50, 30);
+            Rect rr = new Rect(50, 95, 50, 30);
+
+            if (rl.Overlaps(new Rect(pos.x * terrain.terrainData.size.x, pos.z * terrain.terrainData.size.z, 1, 1)) || rr.Overlaps(new Rect(pos.x * terrain.terrainData.size.x, pos.z * terrain.terrainData.size.z, 1, 1)))
+                continue;
+
+            ti.position = (pos / 128.0f);
             ti.prototypeIndex = Random.Range(0, 14);
             ti.heightScale = 1;
             ti.widthScale = 1;

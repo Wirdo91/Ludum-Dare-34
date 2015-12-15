@@ -39,7 +39,7 @@ public class BattleSystem : MonoBehaviour {
     PlayerMovement _player1Object, _player2Object;
 
     [SerializeField]
-    UnityEngine.UI.Text _gameOverText;
+    GameObject _gameOverText;
 
     public void DeactivatePlayers()
     {
@@ -302,11 +302,11 @@ public class BattleSystem : MonoBehaviour {
     {
         if (losingteam == Teams.TEAM1)
         {
-            _gameOverText.text = "Player 2 won the game!";
+            _gameOverText.transform.FindChild("Text").GetComponent<UnityEngine.UI.Text>().text = "Player 2 won the game!";
         }
         else if (losingteam == Teams.TEAM2)
         {
-            _gameOverText.text = "Player 1 won the game!";
+            _gameOverText.transform.FindChild("Text").GetComponent<UnityEngine.UI.Text>().text = "Player 1 won the game!";
         }
         _gameOverText.gameObject.SetActive(true);
     }
